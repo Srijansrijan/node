@@ -64,8 +64,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
-        cd frontend
-        npm install --force
+        cd deps/npm
+        npm install 
 
     #-  name: Print GITHUB_RUN_RESULT
     #   run: echo "GITHUB_RUN_RESULT: ${{ env.GITHUB_RUN_RESULT }}"
@@ -99,90 +99,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python3 -m pip install --upgrade pip
-        cd lib && pip install -r dev-requirements.txt
-        pip install -r integration-requirements.txt
-      
-    #-  name: Print GITHUB_RUN_RESULT
-    #   run: echo "GITHUB_RUN_RESULT: ${{ env.GITHUB_RUN_RESULT }}"
-          url: '${{env.API_URL}}/utilityapi/v1/scan'
-          method: 'POST'
-          data: '{"api_key": "${{secrets.VB_API_KEY_IR}}"}'
-      - name: Parse Response
-        id: parseResponse
-        run: echo "scan_id=${{fromJSON(steps.createScan.outputs.response).data.scan_id}}" >> "$GITHUB_OUTPUT"
-      #- name: Print GITHUB_RUN_RESULT
-        #run: echo "GITHUB_RUN_RESULT: ${{ process.env.GITHUB_RUN_RESULT }}" >> $GITHUB_ENV
-
-  build_node:
-    runs-on: ubuntu-latest
-    needs: create_scan_in_IR_Portal
-    services:
-      pse:
-        image: kkisalaya/pse-proxy:dev
-        env:
-          PSE_DEBUG_FLAG: --alsologtostderr
-          POLICY_LOG: t
-          INVISIRISK_JWT_TOKEN: ${{secrets.VB_API_KEY_IR}} 
-          INVISIRISK_PORTAL: https://app.dev.veribom.com/
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-    container:
-      image: node:18-alpine
-      options: --cap-add=NET_ADMIN
-    strategy:
-      matrix:
-        node-version: [18.x]
-    steps:
-    - env: 
-        SCAN_ID: ${{ needs.create_scan_in_IR_Portal.outputs.scan_id }}
-      run: echo $SCAN_ID
-    - uses: invisirisk/pse-action@v1.0.7
-      with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          SCAN_ID: ${{ needs.create_scan_in_IR_Portal.outputs.scan_id }}
-    - name: Checkout the code
-      uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: |
-        cd frontend
-        npm install --force
-
-    #-  name: Print GITHUB_RUN_RESULT
-    #   run: echo "GITHUB_RUN_RESULT: ${{ env.GITHUB_RUN_RESULT }}"
-
-  
-  build_python:
-    runs-on: ubuntu-latest
-    needs: create_scan_in_IR_Portal
-    services:
-      pse:
-        image: kkisalaya/pse-proxy:dev
-        env:
-          PSE_DEBUG_FLAG: --alsologtostderr
-          POLICY_LOG: t
-          INVISIRISK_JWT_TOKEN: ${{secrets.VB_API_KEY_IR}} 
-          INVISIRISK_PORTAL: https://app.dev.veribom.com/
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-    container:
-      image: python:3.10-alpine
-      options: --cap-add=NET_ADMIN
-    steps:
-    - env:
-        SCAN_ID: ${{ needs.create_scan_in_IR_Portal.outputs.scan_id }}
-      run: echo $SCAN_ID
-    - uses: invisirisk/pse-action@v1.0.7
-      with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          SCAN_ID: ${{ needs.create_scan_in_IR_Portal.outputs.scan_id }}
-    - name: Checkout the code
-      uses: actions/checkout@v3
-    - name: Install Python dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        cd lib && pip install -r dev-requirements.txt
-        pip install -r integration-requirements.txt
+        pip install -r deps/uv/docs/requirements.txt
       
     #-  name: Print GITHUB_RUN_RESULT
     #   run: echo "GITHUB_RUN_RESULT: ${{ env.GITHUB_RUN_RESULT }}"
