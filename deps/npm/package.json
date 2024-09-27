@@ -193,7 +193,6 @@
   "devDependencies": {
     "@npmcli/eslint-config": "^4.0.2",
     "@npmcli/git": "^5.0.8",
-    "@npmcli/mock-globals": "^1.0.0",
     "@npmcli/mock-registry": "^1.0.0",
     "@npmcli/template-oss": "4.23.3",
     "@tufjs/repo-mock": "^2.0.0",
