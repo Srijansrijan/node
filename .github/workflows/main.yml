@@ -1,32 +1,9 @@
 name: Build NPM Package and python package
 on:
   push:
-    branches: [ develop ]
+    branches: [ ir_proxy ]
   pull_request:
-    branches: [ develop ]
-
-permissions:
-  checks: write
-  contents: read
-  packages: read
-env:
-  API_URL: 'https://app.dev.veribom.com'
-
-jobs:
-  create_scan_in_IR_Portal:
-    runs-on: ubuntu-latest
-    outputs:
-      scan_id: ${{ steps.parseResponse.outputs.scan_id }}
-    steps:
-      - name: Initiating SBOM Scan
-        id: createScan
-        uses: fjogeleit/http-request-action@v1.15.1
-        with:name: Build NPM Package and python package
-on:
-  push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    branches: [ ir_proxy ]
 
 permissions:
   checks: write
